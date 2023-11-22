@@ -1,1 +1,1 @@
-export {default as MongoConnect, getMongoClient} from './mongo-connection'
+export {default as MongoConnect, MongoFetch} from './mongo-connection'

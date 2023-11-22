@@ -1,4 +1,4 @@
-import {MongoConnect} from './api'
+import {MongoConnect} from "@/api"
 
 export const metadata = {
   title: 'expense-track stonks',
@@ -10,7 +10,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  MongoConnect()
+  await MongoConnect()
   return (
     <html lang="en">
       <body>

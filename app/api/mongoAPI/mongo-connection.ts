@@ -1,27 +1,21 @@
 import mongoURI from './mongo-logins'
 import {MongoClient} from 'mongodb'
+import FetchData from './fetch-data'
 
-var mongoClient;
+export var mongoClient;
 
 const MongoConnect = async () => {
-    const client = new MongoClient(mongoURI);
     try {
-        await client.connect()
-        mongoClient = client
-        // mongoClient = client.mongoClient("expenses")
+        new MongoClient(mongoURI).connect()
+            .then((client) => {mongoClient = client});
         console.log("connected");
     } catch(e) {
         console.error(`Mongo Connection Error: ${e}`)
     }
 }
 
-export const getMongoClient = async () => {
-    
-    console.log("mongoClient", mongoClient);
-    if (!!mongoClient) {
-        await MongoConnect()
-    }
-    return mongoClient
-}
+export const MongoFetch = async () => {
+    await FetchData(mongoClient)
+} 
 
 export default MongoConnect

@@ -1,1 +1,1 @@
-export {MongoConnect, getMongoClient} from "./mongoAPI"
+export {MongoConnect, MongoFetch} from "./mongoAPI"
