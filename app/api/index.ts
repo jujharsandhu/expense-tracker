@@ -1,1 +1,1 @@
-export {MongoConnect, MongoFetch} from "./mongoAPI"
+export * from "./mongoAPI"

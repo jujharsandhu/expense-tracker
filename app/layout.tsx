@@ -10,7 +10,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  await MongoConnect()
+  // await MongoConnect()
   return (
     <html lang="en">
       <body>

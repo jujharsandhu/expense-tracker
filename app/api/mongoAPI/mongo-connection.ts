@@ -1,9 +1,13 @@
-import mongoURI from './mongo-logins'
 import {MongoClient} from 'mongodb'
 import FetchData from './fetch-data'
 
 export var mongoClient;
 
+if (!process.env.MONGODB_URI) {
+    throw new Error('Please add your Mongo URI to .env.local')
+}
+
+const mongoURI = process.env.MONGODB_URI
 const client = new MongoClient(mongoURI)
 
 const MongoConnect = async () => {
@@ -12,8 +16,6 @@ const MongoConnect = async () => {
             .then((client) => {mongoClient = client});
         
             console.log("connected");
-        await FetchData(mongoClient)
-
     } catch(e) {
         console.error(`Mongo Connection Error: ${e}`)
     }
