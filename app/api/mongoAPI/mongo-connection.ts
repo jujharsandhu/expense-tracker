@@ -4,11 +4,16 @@ import FetchData from './fetch-data'
 
 export var mongoClient;
 
+const client = new MongoClient(mongoURI)
+
 const MongoConnect = async () => {
     try {
-        new MongoClient(mongoURI).connect()
+        await client.connect()
             .then((client) => {mongoClient = client});
-        console.log("connected");
+        
+            console.log("connected");
+        await FetchData(mongoClient)
+
     } catch(e) {
         console.error(`Mongo Connection Error: ${e}`)
     }
