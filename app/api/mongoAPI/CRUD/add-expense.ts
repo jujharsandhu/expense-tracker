@@ -1,4 +1,4 @@
-import {MongoClient} from 'mongodb'
+import { MongoClient } from 'mongodb'
 
 /**
 example expense: 
@@ -11,13 +11,25 @@ example expense:
 },
 */
 
-export const CreateExpense = async (client: MongoClient, newExpense: Object) => {
-    const res = await client.db("expenses").collection("dev-playground").insertOne(newExpense)
-    console.log("expense created with id: ", res.insertedId)
+export const CreateExpense = async (
+  client: MongoClient,
+  newExpense: Object
+) => {
+  const res = await client
+    .db('expenses')
+    .collection('dev-playground')
+    .insertOne(newExpense)
+  console.log('expense created with id: ', res.insertedId)
 }
 
-export const CreateMultipleExpenses = async (client: MongoClient, newExpense) => {
-    const res = await client.db("expenses").collection("dev-playground").insertMany(newExpense, {ordered: true})
-    console.log(`${res.insertedCount} expense(s) created with id:`)
-    console.log(res.insertedIds)
+export const CreateMultipleExpenses = async (
+  client: MongoClient,
+  newExpense
+) => {
+  const res = await client
+    .db('expenses')
+    .collection('dev-playground')
+    .insertMany(newExpense, { ordered: true })
+  console.log(`${res.insertedCount} expense(s) created with id:`)
+  console.log(res.insertedIds)
 }

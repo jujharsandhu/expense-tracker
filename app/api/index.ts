@@ -1,1 +1,1 @@
-export * from "./mongoAPI"
+export * from './mongoAPI'

@@ -1,24 +1,22 @@
-import {clientPromise} from "@/api"
+import { clientPromise } from '@/api'
 
 const Header = ({ title }) => {
-  return <h1>{title ? title : 'Default title'}</h1>;
+  return <h1>{title ? title : 'Default title'}</h1>
 }
 
 const HomePage = async () => {
-
-  try{
+  try {
     const client = await clientPromise
-    console.log("connected")
+    console.log('connected')
   } catch (e) {
     console.error(e)
   }
 
-    return (
-        <div>
-          <Header title="Develop. Preview. Ship. 🚀" />
-          <h2>this is where is dashboard is at</h2>
-    
-        </div>
-      );
+  return (
+    <div>
+      <Header title="Develop. Preview. Ship. 🚀" />
+      <h2>this is where is dashboard is at</h2>
+    </div>
+  )
 }
 export default HomePage

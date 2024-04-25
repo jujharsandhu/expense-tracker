@@ -1,24 +1,24 @@
-import { MongoClient, ServerApiVersion } from "mongodb";
+import { MongoClient, ServerApiVersion } from 'mongodb'
 
-export let mongoClient: MongoClient;
+export let mongoClient: MongoClient
 
 if (!process.env.MONGODB_URI) {
-    throw new Error('Please add your Mongo URI to .env.local')
+  throw new Error('Please add your Mongo URI to .env.local')
 }
 
 const mongoURI = process.env.MONGODB_URI
 const options = {
-    serverApi: {
-      version: ServerApiVersion.v1,
-      strict: true,
-      deprecationErrors: true,
-    },
-};
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  },
+}
 
 let client: MongoClient
 let clientPromise: Promise<MongoClient>
 
-client = new MongoClient(mongoURI, options);
-clientPromise = client.connect();
+client = new MongoClient(mongoURI, options)
+clientPromise = client.connect()
 
 export default clientPromise
