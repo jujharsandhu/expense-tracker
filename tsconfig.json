@@ -2,7 +2,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/api": ["./app/api"]
+      "@/api": ["./app/api"],
+      "@/component": ["./app/components"]
     },
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,

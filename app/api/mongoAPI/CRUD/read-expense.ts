@@ -32,6 +32,7 @@ export const FindExpenses = async (client: MongoClient, query: Object) => {
   if (result) {
     console.log('Found listing(s) in the collection:')
     console.log(result)
+    return result
   } else {
     console.log('No listings found, query: ')
     console.log(query)
