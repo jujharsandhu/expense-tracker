@@ -1,5 +1,12 @@
-const AddExpense = async () => {
-  return <h1>Add Expense Here</h1>
-}
+import { Suspense } from 'react'
+import { AddExpense } from '@/component'
 
-export default AddExpense
+export default function Posts() {
+  return (
+    <section>
+      <Suspense fallback={<p>Loading module...</p>}>
+        <AddExpense />
+      </Suspense>
+    </section>
+  )
+}

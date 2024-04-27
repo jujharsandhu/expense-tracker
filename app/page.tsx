@@ -1,21 +1,18 @@
-import { clientPromise } from '@/api'
+import { RecentExpenses } from '@/component'
 
 const Header = ({ title }) => {
   return <h1>{title ? title : 'Default title'}</h1>
 }
 
 const HomePage = async () => {
-  try {
-    const client = await clientPromise
-    console.log('connected')
-  } catch (e) {
-    console.error(e)
-  }
+  const result = await fetch('http://localhost:3000/api/get-expense')
+  const recentExpenses = await result.json()
 
   return (
     <div>
       <Header title="Develop. Preview. Ship. 🚀" />
-      <h2>this is where is dashboard is at</h2>
+      <h2>Recent Expenses</h2>
+      <RecentExpenses expenses={recentExpenses} />
     </div>
   )
 }
