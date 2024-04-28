@@ -7,7 +7,6 @@ export async function GET(req) {
 }
 
 export async function POST(req: Request) {
-    
   const requestBody = await req.json()
   console.log('requestBody: ', requestBody)
   try {
@@ -21,5 +20,5 @@ export async function POST(req: Request) {
     location.reload()
     // recentExpenses = []
   }
-  return new NextResponse("hello i am put")
+  return new NextResponse('hello i am put')
 }
