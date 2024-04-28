@@ -1,4 +1,4 @@
-import { RecentExpenses } from '@/component'
+import { RecentExpenses } from '@/components'
 
 const Header = ({ title }) => {
   return <h1>{title ? title : 'Default title'}</h1>

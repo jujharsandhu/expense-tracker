@@ -9,16 +9,16 @@ export async function GET(req) {
 export async function POST(req: Request) {
   const requestBody = await req.json()
   console.log('requestBody: ', requestBody)
+  let recentExpenses
   try {
     const client: MongoClient = await clientPromise
     console.log('connected')
-    // const result = await CreateExpense(client, req)
-    // console.log(result)
-    // recentExpenses = JSON.parse(JSON.stringify(result))
+    const result = await CreateExpense(client, requestBody)
+    console.log(result)
+    recentExpenses = JSON.parse(JSON.stringify(result))
   } catch (e) {
     console.error(e)
-    location.reload()
-    // recentExpenses = []
+    recentExpenses = []
   }
   return new NextResponse('hello i am put')
 }
