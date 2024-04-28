@@ -1,16 +1,16 @@
 'use client'
 
 import { TextField, Box, Button } from '@mui/material'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { useState } from 'react'
 import { putData } from '@/api/add-expense/add-expense'
-import { LocalizationProvider } from '@mui/x-date-pickers';
+import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import dayjs from 'dayjs';
+import dayjs from 'dayjs'
 
 const AddExpense = () => {
   const [values, setValues] = useState({
-    date: '',
+    date: dayjs().format(),
     item: '',
     total: '',
     currency: '',
@@ -18,28 +18,46 @@ const AddExpense = () => {
     note: '',
     category: '',
   })
-  const [submitted, setSubmit] = useState(false)
+  const [canSubmit, setCanSubmit] = useState(false)
 
+  const checkCanSubmit = () => {
+    if (
+      values.item !== '' &&
+      values.total !== '' &&
+      values.currency !== '' &&
+      values.category !== ''
+    ) {
+      setCanSubmit(true)
+    }
+  }
   // value changes
   const handleDateChange = (val) => {
     setValues({ ...values, date: val.format() })
+    checkCanSubmit()
   }
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value })
+    checkCanSubmit()
   }
-  const handleCurrencyChange = (event) => setValues({ ...values, currency: event.target.value.toUpperCase() })
+  const handleCurrencyChange = (event) => {
+    setValues({ ...values, currency: event.target.value.toUpperCase() })
+    checkCanSubmit()
+  }
 
   const handleSubmit = () => {
-    setSubmit(true)
-    if (submitted) {
-      putData(values)
-    }
+    putData(values)
   }
+
   return (
     <Box component="form">
       <h1>Add Expense Here</h1>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker label="Date" defaultValue={dayjs()} disableFuture onAccept={(val) => handleDateChange(val)} />
+        <DatePicker
+          label="Date"
+          defaultValue={dayjs()}
+          disableFuture
+          onAccept={(val) => handleDateChange(val)}
+        />
       </LocalizationProvider>
       <TextField
         id="item"
@@ -75,7 +93,7 @@ const AddExpense = () => {
         onChange={handleChange('category')}
         required
       />
-      <Button variant="contained" onClick={handleSubmit}>
+      <Button variant="contained" onClick={handleSubmit} disabled={!canSubmit}>
         Submit
       </Button>
     </Box>
