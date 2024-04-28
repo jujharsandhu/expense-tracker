@@ -2,7 +2,7 @@
 
 import { TextField, Box, Button } from '@mui/material'
 import { useState } from 'react'
-import { putData } from 'app/api/add-expense/add-expense'
+import { putData } from '@/api/add-expense/add-expense'
 
 const AddExpense = () => {
   const [values, setValues] = useState({
