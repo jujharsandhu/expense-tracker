@@ -19,6 +19,7 @@ const AddExpense = () => {
     category: '',
   })
   const [canSubmit, setCanSubmit] = useState(false)
+  const [amountError, setAmountError] = useState(false)
 
   const checkCanSubmit = () => {
     if (
@@ -34,6 +35,15 @@ const AddExpense = () => {
   const handleDateChange = (val) => {
     setValues({ ...values, date: val.format() })
     checkCanSubmit()
+  }
+  const handleAmountChange = (event) => {
+    const val = event.target.value
+    if (isNaN(Number(val)) || Number(val) <= 0) {
+      setAmountError(true)
+      return
+    }
+    setAmountError(false)
+    setValues({ ...values, total: val })
   }
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value })
@@ -70,7 +80,9 @@ const AddExpense = () => {
         id="total"
         label="Total"
         variant="standard"
-        onChange={handleChange('total')}
+        onChange={handleAmountChange}
+        error={amountError}
+        helperText={amountError ? "Please provide a positive number" : ""}
         required
       />
       <TextField
