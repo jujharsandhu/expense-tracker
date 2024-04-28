@@ -2,7 +2,7 @@
 
 import { TextField, Box, Button } from '@mui/material'
 import { useState } from 'react'
-import { CreateExpense } from '@/api'
+import { putData } from '@/api/add-expense/add-expense'
 
 const AddExpense = () => {
   const [values, setValues] = useState({
@@ -14,12 +14,15 @@ const AddExpense = () => {
     note: '',
     category: '',
   })
+  const [submitted, setSubmit] = useState(false)
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value })
   }
   const handleSubmit = () => {
-    console.log('submitting')
-    console.log('submitted')
+    setSubmit(true)
+    if (submitted) {
+      putData(values)
+    }
   }
   return (
     <Box component="form">
