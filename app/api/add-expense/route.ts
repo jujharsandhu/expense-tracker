@@ -8,7 +8,6 @@ export async function GET(req) {
 
 export async function POST(req: Request) {
   const requestBody = await req.json()
-  console.log('requestBody: ', requestBody)
   let recentExpenses
   try {
     const client: MongoClient = await clientPromise

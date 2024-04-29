@@ -1,12 +1,13 @@
 'use client'
 
-import { TextField, Box, Button } from '@mui/material'
+import { TextField, Box, Button, Autocomplete } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { useState } from 'react'
 import { putData } from '@/api/add-expense/add-expense'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
+import * as currencies from '@/lib/all-currencies.json'
 
 const AddExpense = () => {
   const [values, setValues] = useState({
@@ -29,6 +30,8 @@ const AddExpense = () => {
       values.category !== ''
     ) {
       setCanSubmit(true)
+    } else {
+      setCanSubmit(false)
     }
   }
   // value changes
@@ -49,15 +52,15 @@ const AddExpense = () => {
     setValues({ ...values, [prop]: event.target.value })
     checkCanSubmit()
   }
-  const handleCurrencyChange = (event) => {
-    setValues({ ...values, currency: event.target.value.toUpperCase() })
+  const handleCurrencyChange = (event: any, newVal) => {
+    setValues({ ...values, currency: newVal })
+    console.log(values)
     checkCanSubmit()
   }
 
   const handleSubmit = () => {
     putData(values)
   }
-
   return (
     <Box component="form">
       <h1>Add Expense Here</h1>
@@ -72,36 +75,43 @@ const AddExpense = () => {
       <TextField
         id="item"
         label="Item"
-        variant="standard"
+        variant="outlined"
         onChange={handleChange('item')}
         required
       />
       <TextField
         id="total"
         label="Total"
-        variant="standard"
+        variant="outlined"
         onChange={handleAmountChange}
         error={amountError}
-        helperText={amountError ? "Please provide a positive number" : ""}
+        helperText={amountError ? 'Please provide a positive number' : ''}
         required
       />
-      <TextField
+      <Autocomplete
+        disablePortal
+        options={currencies.catalog}
+        onInputChange={handleCurrencyChange}
+        renderInput={(params) => <TextField {...params} label="Currency" required />
+        }
+      />
+      {/* <TextField
         id="currency"
         label="Currency"
-        variant="standard"
+        variant="outlined"
         onChange={handleCurrencyChange}
         required
-      />
+      /> */}
       <TextField
         id="note"
         label="Note"
-        variant="standard"
+        variant="outlined"
         onChange={handleChange('note')}
       />
       <TextField
         id="category"
         label="Category"
-        variant="standard"
+        variant="outlined"
         onChange={handleChange('category')}
         required
       />
