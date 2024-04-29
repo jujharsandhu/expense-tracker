@@ -92,8 +92,9 @@ const AddExpense = () => {
         disablePortal
         options={currencies.catalog}
         onInputChange={handleCurrencyChange}
-        renderInput={(params) => <TextField {...params} label="Currency" required />
-        }
+        renderInput={(params) => (
+          <TextField {...params} label="Currency" required />
+        )}
       />
       {/* <TextField
         id="currency"
