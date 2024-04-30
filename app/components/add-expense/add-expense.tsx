@@ -54,7 +54,6 @@ const AddExpense = () => {
   }
   const handleCurrencyChange = (event: any, newVal) => {
     setValues({ ...values, currency: newVal })
-    console.log(values)
     checkCanSubmit()
   }
 
