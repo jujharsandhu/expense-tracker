@@ -8,7 +8,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Autocomplete
+  Autocomplete,
 } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { putData } from '@/api/add-expense/add-expense'
@@ -16,8 +16,60 @@ import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
 import * as currencies from '@/lib/all-currencies.json'
+import { useForm, SubmitHandler } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
+
+const schema = {
+  date: yup.string().optional(),
+  item: yup.string().optional(),
+  amount: yup.string().optional(),
+  currency: yup.string().optional(),
+  // paymentMethod: {},
+  note: yup.string().optional(),
+  category: yup.string().optional(),
+}
+const formData = {
+  date: '200',
+  item: 'cll',
+  amount: '100',
+  currency: 'USD',
+  note: 'abc',
+  category: 'test',
+}
 
 const AddExpenseDialog = () => {
+  const {
+    register,
+    handleSubmit,
+    watch, // good for debugging
+    formState: { errors },
+  } = useForm<typeof schema>({
+    defaultValues: {
+      date: '200',
+      item: 'cll',
+      amount: '100',
+      currency: 'USD',
+      note: 'abc',
+      category: 'test',
+    },
+    resolver: yupResolver(
+      schema,
+      [
+        formData.date,
+        formData.item,
+        formData.amount,
+        formData.currency,
+        formData.note,
+        formData.category,
+      ],
+      schema,
+      'Invalid Input',
+      'type',
+      formData
+    ),
+  })
+
   const [open, setOpen] = useState(false)
   const handleClickOpen = () => {
     setOpen(true)
@@ -55,7 +107,7 @@ const AddExpenseDialog = () => {
   const handleCurrencyChange = (event: any, newVal) => {
     setValues({ ...values, currency: newVal })
   }
-  const handleSubmit = () => {
+  const onSubmit = () => {
     putData(values)
     handleClose()
   }
@@ -124,7 +176,9 @@ const AddExpenseDialog = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" onClick={handleSubmit} >Submit</Button>
+          <Button variant="contained" onClick={onSubmit}>
+            Submit
+          </Button>
         </DialogActions>
       </Dialog>
     </>

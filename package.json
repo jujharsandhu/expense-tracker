@@ -9,6 +9,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+    "@hookform/resolvers": "^3.3.4",
     "@mui/material": "^5.15.15",
     "@mui/x-date-pickers": "^7.3.1",
     "@typescript-eslint/eslint-plugin": "^7.7.1",
@@ -18,7 +19,9 @@
     "next": "^14.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "watchpack": "^2.4.1"
+    "react-hook-form": "^7.51.3",
+    "watchpack": "^2.4.1",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.1.1",
