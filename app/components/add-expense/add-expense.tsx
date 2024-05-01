@@ -13,7 +13,7 @@ const AddExpense = () => {
   const [values, setValues] = useState({
     date: dayjs().format(),
     item: '',
-    total: '',
+    amount: '',
     currency: '',
     // paymentMethod: {},
     note: '',
@@ -25,7 +25,7 @@ const AddExpense = () => {
   const checkCanSubmit = () => {
     if (
       values.item !== '' &&
-      values.total !== '' &&
+      values.amount !== '' &&
       values.currency !== '' &&
       values.category !== ''
     ) {
@@ -46,7 +46,7 @@ const AddExpense = () => {
       return
     }
     setAmountError(false)
-    setValues({ ...values, total: val })
+    setValues({ ...values, amount: val })
   }
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value })
@@ -79,8 +79,8 @@ const AddExpense = () => {
         required
       />
       <TextField
-        id="total"
-        label="Total"
+        id="amount"
+        label="Amount"
         variant="outlined"
         onChange={handleAmountChange}
         error={amountError}
