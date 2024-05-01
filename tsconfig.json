@@ -3,6 +3,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./app/*"],
+      "@/lib/*": ["./lib/*"]
     },
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
