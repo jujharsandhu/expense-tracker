@@ -30,6 +30,7 @@ const AddExpenseDialog = () => {
         PaperProps={{
           component: 'form',
           onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
+            // TODO: make call to mongo with spin, then close
             event.preventDefault()
             const formData = new FormData(event.currentTarget)
             const formJson = Object.fromEntries((formData as any).entries())
@@ -48,7 +49,7 @@ const AddExpenseDialog = () => {
             label="Item"
             variant="standard"
             fullWidth
-            // onChange={handleChange('item')}
+          // onChange={handleChange('item')}
           />
         </DialogContent>
         <DialogActions>
