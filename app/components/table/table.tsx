@@ -6,6 +6,7 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import { Button } from '@mui/material'
+import { ExpenseDialog, UpdateExpense } from '@/components'
 
 const HeaderRow = ({ headers }) => (
   <TableHead>
@@ -29,7 +30,7 @@ const BodyRows = ({ data }) => {
             </TableCell>
           ))}
           <TableCell align="center">
-            <Button>edit</Button>
+            <ExpenseDialog buttonLabel="edit" form={row} />
           </TableCell>
         </TableRow>
       ))}

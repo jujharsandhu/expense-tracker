@@ -1,45 +1,48 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import {
-  TextField,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  TextField,
 } from '@mui/material'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 
 const schema = {
-  item: yup.string(),
+  item: yup.string().optional(),
 }
 const formData = {
   item: '',
 }
 
-const UpdateExpense = () => {
+const UpdateExpense = (props) => {
+  const { buttonLabel = 'edit', defaultItem = '' } = props
   const {
     register,
     handleSubmit,
     watch, // good for debugging
     formState: { errors },
   } = useForm<typeof schema>({
-    defaultValues: {
-      item: 'clothes',
-    },
-    resolver: yupResolver(
-      schema,
-      [formData.item],
-      schema,
-      'Invalid Input',
-      'type',
-      formData
-    ),
+    defaultValues: useMemo(() => ({ item: defaultItem }), [defaultItem]),
+    // resolver: yupResolver(
+    //   schema,
+    //   [formData.item],
+    //   schema,
+    //   'Invalid Input',
+    //   'type',
+    //   formData
+    // ),
   })
-  const onSubmit: SubmitHandler<typeof schema> = (data) => console.log(data)
+  const submitFunction: SubmitHandler<typeof schema> = (data) => {
+    console.log(data)
+    handleClose()
+  }
+  const onInvalid = (error) => console.log(error)
 
   const [open, setOpen] = useState(false)
   const handleClickOpen = () => {
@@ -51,7 +54,7 @@ const UpdateExpense = () => {
   return (
     <>
       <Button variant="outlined" onClick={handleClickOpen}>
-        Update an Expense
+        {buttonLabel}
       </Button>
       <Dialog
         open={open}
@@ -59,20 +62,22 @@ const UpdateExpense = () => {
         PaperProps={{
           component: 'form',
         }}>
-        <DialogTitle>Create a New Expense</DialogTitle>
+        <DialogTitle>Edit This Expense</DialogTitle>
         <DialogContent>
           <TextField
             id="item"
             label="Item"
             variant="outlined"
             required
-            {...register('item', { required: true })}
+            {...register('item')}
             fullWidth
           />
           {errors.item && <span>this field is required</span>}
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" onSubmit={handleSubmit(onSubmit)}>
+          <Button
+            variant="contained"
+            onClick={handleSubmit(submitFunction, onInvalid)}>
             Submit
           </Button>
         </DialogActions>

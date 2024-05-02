@@ -1,14 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import {
-  TextField,
+  Autocomplete,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Autocomplete,
+  TextField,
 } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { putData } from '@/api/add-expense/add-expense'
@@ -16,59 +16,53 @@ import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
 import * as currencies from '@/lib/all-currencies.json'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import {
+  Controller,
+  FormProvider,
+  SubmitHandler,
+  useForm,
+} from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 
 const schema = {
-  date: yup.string().optional(),
-  item: yup.string().optional(),
-  amount: yup.string().optional(),
-  currency: yup.string().optional(),
+  date: yup.date(),
+  item: yup.string(),
+  amount: yup.string(),
+  currency: yup.string(),
   // paymentMethod: {},
   note: yup.string().optional(),
-  category: yup.string().optional(),
-}
-const formData = {
-  date: '200',
-  item: 'cll',
-  amount: '100',
-  currency: 'USD',
-  note: 'abc',
-  category: 'test',
+  category: yup.string(),
 }
 
-const AddExpenseDialog = () => {
+const AddExpenseDialog = (props) => {
+  const { buttonLabel = 'create new expense', form = {} } = props
+  const formProps = useForm<typeof schema>({
+    defaultValues: form,
+    // resolver: yupResolver(
+    //   schema,
+    //   [
+    //     formData.date,
+    //     formData.item,
+    //     formData.amount,
+    //     formData.currency,
+    //     formData.note,
+    //     formData.category,
+    //   ],
+    //   schema,
+    //   'Invalid Input',
+    //   'type',
+    //   formData
+    // ),
+  })
+
   const {
+    control,
     register,
     handleSubmit,
     watch, // good for debugging
     formState: { errors },
-  } = useForm<typeof schema>({
-    defaultValues: {
-      date: '200',
-      item: 'cll',
-      amount: '100',
-      currency: 'USD',
-      note: 'abc',
-      category: 'test',
-    },
-    resolver: yupResolver(
-      schema,
-      [
-        formData.date,
-        formData.item,
-        formData.amount,
-        formData.currency,
-        formData.note,
-        formData.category,
-      ],
-      schema,
-      'Invalid Input',
-      'type',
-      formData
-    ),
-  })
+  } = formProps
 
   const [open, setOpen] = useState(false)
   const handleClickOpen = () => {
@@ -101,21 +95,16 @@ const AddExpenseDialog = () => {
     setAmountError(false)
     setValues({ ...values, amount: val })
   }
-  const handleChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value })
-  }
-  const handleCurrencyChange = (event: any, newVal) => {
-    setValues({ ...values, currency: newVal })
-  }
-  const onSubmit = () => {
-    putData(values)
+  const onSubmit: SubmitHandler<typeof schema> = (data) => {
+    // putData(values)
+    console.log(data)
     handleClose()
   }
 
   return (
     <>
       <Button variant="outlined" onClick={handleClickOpen}>
-        Add New Expense
+        {buttonLabel}
       </Button>
       <Dialog
         open={open}
@@ -125,58 +114,79 @@ const AddExpenseDialog = () => {
         }}>
         <DialogTitle>Create a New Expense</DialogTitle>
         <DialogContent>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              label="Date"
-              defaultValue={dayjs()}
-              disableFuture
-              onAccept={(val) => handleDateChange(val)}
-            />
-          </LocalizationProvider>
-          <TextField
-            id="item"
-            label="Item"
-            variant="outlined"
-            onChange={handleChange('item')}
-            required
-            fullWidth
-          />
-          <TextField
-            id="amount"
-            label="Amount"
-            variant="outlined"
-            onChange={handleAmountChange}
-            error={amountError}
-            helperText={amountError ? 'Please provide a positive number' : ''}
-            required
-            fullWidth
-          />
-          <Autocomplete
-            disablePortal
-            options={currencies.catalog}
-            onInputChange={handleCurrencyChange}
-            renderInput={(params) => (
-              <TextField {...params} fullWidth label="Currency" required />
-            )}
-          />
-          <TextField
-            id="note"
-            label="Note"
-            variant="outlined"
-            onChange={handleChange('note')}
-            fullWidth
-          />
-          <TextField
-            id="category"
-            label="Category"
-            variant="outlined"
-            onChange={handleChange('category')}
-            required
-            fullWidth
-          />
+          <FormProvider {...formProps}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Controller
+                control={control}
+                name="date"
+                defaultValue={form.date ? dayjs(form.date) : dayjs()}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      label="Date"
+                      defaultValue={form.date ? dayjs(form.date) : dayjs()}
+                      disableFuture
+                      required
+                      onChange={(date) => field.onChange(date)}
+                    />
+                  </LocalizationProvider>
+                )}
+              />
+              <TextField
+                id="item"
+                label="Item"
+                variant="outlined"
+                required
+                {...register('item')}
+                fullWidth
+              />
+              <TextField
+                id="amount"
+                label="Amount"
+                variant="outlined"
+                error={amountError}
+                helperText={
+                  amountError ? 'Please provide a positive number' : ''
+                }
+                required
+                {...register('amount')}
+                fullWidth
+              />
+              <Autocomplete
+                disablePortal
+                defaultValue={form.currency}
+                options={currencies.catalog}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    {...register('currency')}
+                    fullWidth
+                    label="Currency"
+                    required
+                  />
+                )}
+              />
+              <TextField
+                id="note"
+                label="Note"
+                variant="outlined"
+                {...register('note')}
+                fullWidth
+              />
+              <TextField
+                id="category"
+                label="Category"
+                variant="outlined"
+                required
+                {...register('category')}
+                fullWidth
+              />
+            </form>
+          </FormProvider>
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" onClick={onSubmit}>
+          <Button variant="contained" onClick={handleSubmit(onSubmit)}>
             Submit
           </Button>
         </DialogActions>

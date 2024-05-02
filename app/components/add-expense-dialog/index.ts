@@ -1,1 +1,1 @@
-export { default as AddExpenseDialog } from './add-expense-dialog'
+export { default as ExpenseDialog } from './add-expense-dialog'
