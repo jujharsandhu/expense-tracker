@@ -7,7 +7,6 @@ const Header = ({ title }) => {
 const HomePage = async () => {
   const result = await fetch('http://localhost:3000/api/get-expense')
   const recentExpenses = await result.json()
-
   return (
     <div>
       <Header title="Develop. Preview. Ship. 🚀" />
