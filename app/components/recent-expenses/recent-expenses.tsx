@@ -9,10 +9,18 @@ interface Expense {
   category: string
 }
 
-const headers = ['Date', 'Item', 'Amount', 'Currency', 'Category', 'Edit']
+const headers = [
+  'Date',
+  'Item',
+  'Amount',
+  'Currency',
+  'Category',
+  'Note',
+  'Edit',
+]
 
 const filterExpenses = (expenses: Expense[]) => {
-  const allowed = ['date', 'item', 'amount', 'currency', 'category']
+  const allowed = ['date', 'item', 'amount', 'currency', 'category', 'note']
   const newExpenses = expenses.map((expense) => {
     const newExp = {}
     for (const attribute of allowed) {

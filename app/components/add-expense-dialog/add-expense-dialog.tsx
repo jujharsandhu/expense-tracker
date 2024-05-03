@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import {
   Autocomplete,
   Button,
@@ -14,8 +14,8 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { putData } from '@/api/add-expense/add-expense'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import dayjs from 'dayjs'
 import * as currencies from '@/lib/all-currencies.json'
+import { dayjs } from '@/lib/index'
 import {
   Controller,
   FormProvider,
@@ -25,37 +25,21 @@ import {
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 
-const schema = {
-  date: yup.date(),
-  item: yup.string(),
-  amount: yup.string(),
-  currency: yup.string(),
-  // paymentMethod: {},
+const schema = yup.object().shape({
+  date: yup.date().required(),
+  item: yup.string().required(),
+  amount: yup.string().required(),
+  currency: yup.string().required(),
   note: yup.string().optional(),
-  category: yup.string(),
-}
+  category: yup.string().required(),
+})
 
 const AddExpenseDialog = (props) => {
   const { buttonLabel = 'create new expense', form = {} } = props
   const formProps = useForm<typeof schema>({
     defaultValues: form,
-    // resolver: yupResolver(
-    //   schema,
-    //   [
-    //     formData.date,
-    //     formData.item,
-    //     formData.amount,
-    //     formData.currency,
-    //     formData.note,
-    //     formData.category,
-    //   ],
-    //   schema,
-    //   'Invalid Input',
-    //   'type',
-    //   formData
-    // ),
+    resolver: yupResolver(schema),
   })
-
   const {
     control,
     register,
@@ -63,6 +47,7 @@ const AddExpenseDialog = (props) => {
     watch, // good for debugging
     formState: { errors },
   } = formProps
+  const { onChange: amountChange, ...amountRestMethods } = register('amount')
 
   const [open, setOpen] = useState(false)
   const handleClickOpen = () => {
@@ -72,34 +57,22 @@ const AddExpenseDialog = (props) => {
     setOpen(false)
   }
 
-  const [values, setValues] = useState({
-    date: dayjs().format(),
-    item: '',
-    amount: '',
-    currency: '',
-    // paymentMethod: {},
-    note: '',
-    category: '',
-  })
   const [amountError, setAmountError] = useState(false)
-
-  const handleDateChange = (val) => {
-    setValues({ ...values, date: val.format() })
-  }
-  const handleAmountChange = (event) => {
-    const val = event.target.value
-    if (isNaN(Number(val)) || Number(val) <= 0) {
+  const handleAmountChange = (e) => {
+    const numVal = Number(e.target.value)
+    if (isNaN(numVal) || numVal <= 0) {
       setAmountError(true)
-      return
+    } else {
+      setAmountError(false)
+      amountChange(e)
     }
-    setAmountError(false)
-    setValues({ ...values, amount: val })
   }
   const onSubmit: SubmitHandler<typeof schema> = (data) => {
-    // putData(values)
-    console.log(data)
+    putData(data)
+    // console.log(data)
     handleClose()
   }
+  const onError = (error) => console.log(error)
 
   return (
     <>
@@ -128,7 +101,7 @@ const AddExpenseDialog = (props) => {
                       defaultValue={form.date ? dayjs(form.date) : dayjs()}
                       disableFuture
                       required
-                      onChange={(date) => field.onChange(date)}
+                      onChange={(date) => field.onChange(date.format())}
                     />
                   </LocalizationProvider>
                 )}
@@ -140,6 +113,8 @@ const AddExpenseDialog = (props) => {
                 required
                 {...register('item')}
                 fullWidth
+                error={errors.item !== undefined}
+                helperText={errors.item !== undefined && errors.item.message}
               />
               <TextField
                 id="amount"
@@ -150,8 +125,11 @@ const AddExpenseDialog = (props) => {
                   amountError ? 'Please provide a positive number' : ''
                 }
                 required
-                {...register('amount')}
+                onChange={handleAmountChange}
+                {...amountRestMethods}
                 fullWidth
+                error={amountError}
+                helperText={amountError && 'Please enter a valid number'}
               />
               <Autocomplete
                 disablePortal
@@ -164,6 +142,10 @@ const AddExpenseDialog = (props) => {
                     fullWidth
                     label="Currency"
                     required
+                    error={errors.currency !== undefined}
+                    helperText={
+                      errors.currency !== undefined && errors.currency.message
+                    }
                   />
                 )}
               />
@@ -181,12 +163,16 @@ const AddExpenseDialog = (props) => {
                 required
                 {...register('category')}
                 fullWidth
+                error={errors.category !== undefined}
+                helperText={
+                  errors.category !== undefined && errors.category.message
+                }
               />
             </form>
           </FormProvider>
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" onClick={handleSubmit(onSubmit)}>
+          <Button variant="contained" onClick={handleSubmit(onSubmit, onError)}>
             Submit
           </Button>
         </DialogActions>
