@@ -15,8 +15,7 @@ import { putData } from '@/api/add-expense/add-expense'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import * as currencies from '@/lib/all-currencies.json'
-import { dayjs, userTimezone } from '@/lib/index'
-import timezone from 'dayjs/plugin/timezone'
+import { dayjs } from '@/lib/index'
 import {
   Controller,
   FormProvider,

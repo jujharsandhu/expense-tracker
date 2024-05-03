@@ -5,8 +5,8 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
-import { Button } from '@mui/material'
-import { ExpenseDialog, UpdateExpense } from '@/components'
+import { ExpenseDialog } from '@/components'
+import { dayjs } from '@/lib/index'
 
 const HeaderRow = ({ headers }) => (
   <TableHead>
@@ -24,9 +24,9 @@ const BodyRows = ({ data }) => {
         <TableRow
           key={index}
           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-          {Object.values(row).map((v: any, i) => (
+          {Object.keys(row).map((k: any, i) => (
             <TableCell key={i} align="right">
-              {v}
+              {k === 'date' ? dayjs(row[k]).format('YYYY / MMM / D') : row[k]}
             </TableCell>
           ))}
           <TableCell align="center">
