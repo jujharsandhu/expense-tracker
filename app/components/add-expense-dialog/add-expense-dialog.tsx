@@ -15,7 +15,8 @@ import { putData } from '@/api/add-expense/add-expense'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import * as currencies from '@/lib/all-currencies.json'
-import { dayjs } from '@/lib/index'
+import { dayjs, userTimezone } from '@/lib/index'
+import timezone from 'dayjs/plugin/timezone'
 import {
   Controller,
   FormProvider,
@@ -68,11 +69,13 @@ const AddExpenseDialog = (props) => {
     }
   }
   const onSubmit: SubmitHandler<typeof schema> = (data) => {
+    data = {
+      ...data,
+      date: dayjs(data.date).format(),
+    }
     putData(data)
-    // console.log(data)
     handleClose()
   }
-  const onError = (error) => console.log(error)
 
   return (
     <>
@@ -172,7 +175,7 @@ const AddExpenseDialog = (props) => {
           </FormProvider>
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" onClick={handleSubmit(onSubmit, onError)}>
+          <Button variant="contained" onClick={handleSubmit(onSubmit)}>
             Submit
           </Button>
         </DialogActions>
