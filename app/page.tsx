@@ -5,7 +5,8 @@ const Header = ({ title }) => {
 }
 
 const HomePage = async () => {
-  const result = await fetch('http://localhost:3000/api/get-expense')
+  console.log(process.env.URL)
+  const result = await fetch(`${process.env.URL}/api/get-expense`)
   const recentExpenses = await result.json()
   return (
     <div>
