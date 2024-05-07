@@ -1,26 +1,25 @@
 import { clientPromise } from '@/api'
 import { MongoClient } from 'mongodb'
 import { NextResponse } from 'next/server'
-import * as catalog from './all-currencies.json'
 
-export async function GET() {
-  const data = catalog.catalog
-  const newData = []
-  for (const object of data) {
-    newData.push({
-      ...object,
-      lastUsed: '',
-    })
-  }
+export async function GET(req: Request) {
+  let allCurrencies
   try {
     const client: MongoClient = await clientPromise
-    const res = await client
+    const cursor = await client
       .db('expenses')
       .collection('currencies')
-      .insertMany(newData, { ordered: true })
-    console.log(`${res.insertedCount} created with id`)
+      .find(req)
+      .sort({ lastUsed: -1, currency: 1 })
+    const result = await cursor.toArray()
+    if (result) {
+      allCurrencies = result
+    } else {
+      allCurrencies = []
+    }
   } catch (e) {
     console.error(e)
+    allCurrencies = []
   }
-  return new NextResponse('finished')
+  return new NextResponse(JSON.stringify(allCurrencies))
 }

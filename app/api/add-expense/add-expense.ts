@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 
 export const putData = async (param) => {
-  const test = new NextRequest(`${process.env.URL}/api/add-expense`, {
+  const req = new NextRequest(`${process.env.URL}/api/add-expense`, {
     method: 'POST',
     body: JSON.stringify(param),
     headers: {
@@ -9,6 +9,6 @@ export const putData = async (param) => {
     },
   })
 
-  const result = await fetch(test)
+  const result = await fetch(req)
   return 'finished'
 }

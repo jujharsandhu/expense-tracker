@@ -4,6 +4,7 @@ import { useState } from 'react'
 import {
   Autocomplete,
   Button,
+  Box,
   Dialog,
   DialogActions,
   DialogContent,
@@ -14,8 +15,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { putData } from '@/api/add-expense/add-expense'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import * as currencies from '@/lib/all-currencies.json'
-import { dayjs } from '@/lib/index'
+import { dayjs, useCurrency } from '@/lib/index'
 import {
   Controller,
   FormProvider,
@@ -23,6 +23,7 @@ import {
   useForm,
 } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { validation } from './validation'
 import * as yup from 'yup'
 
 const schema = yup.object().shape({
@@ -36,6 +37,8 @@ const schema = yup.object().shape({
 
 const AddExpenseDialog = (props) => {
   const { buttonLabel = 'create new expense', form = {} } = props
+
+  const currencies = useCurrency()
   const formProps = useForm<typeof schema>({
     defaultValues: form,
     resolver: yupResolver(schema),
@@ -72,7 +75,9 @@ const AddExpenseDialog = (props) => {
       ...data,
       date: dayjs(data.date).format(),
     }
-    putData(data)
+    if (!validation(form, data)) {
+      putData(data)
+    }
     handleClose()
   }
 
@@ -136,7 +141,22 @@ const AddExpenseDialog = (props) => {
               <Autocomplete
                 disablePortal
                 defaultValue={form.currency}
-                options={currencies.catalog}
+                options={currencies}
+                renderOption={(props, option) => {
+                  const decode = (v) => {
+                    const txt = document.createElement('textarea')
+                    txt.innerHTML = v
+                    return txt.value
+                  }
+                  return (
+                    <Box
+                      component="li"
+                      sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
+                      {...props}>
+                      {decode(option.symbol)} {option.label}
+                    </Box>
+                  )
+                }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
