@@ -142,6 +142,7 @@ const AddExpenseDialog = (props) => {
                 disablePortal
                 defaultValue={form.currency}
                 options={currencies}
+                isOptionEqualToValue={(option, value) => true}
                 renderOption={(props, option) => {
                   const decode = (v) => {
                     const txt = document.createElement('textarea')
